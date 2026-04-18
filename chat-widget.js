@@ -68,10 +68,17 @@
   let initialized = false;
 
   // GASから設定を取得
-  async function loadSettings() {
+async function loadSettings() {
     if (!GAS_URL) return;
     try {
-      const res = await fetch(GAS_URL);
+      const res = await fetch(`${VERCEL_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'get_settings',
+          gasUrl: GAS_URL
+        })
+      });
       const data = await res.json();
       if (data.settings) {
         siteSettings = data.settings;
