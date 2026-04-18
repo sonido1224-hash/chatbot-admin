@@ -9,6 +9,8 @@
 #sonido-chat-btn:hover{transform:scale(1.08)}
 @media(min-width:768px){#sonido-chat-btn{right:64px}#sonido-chat-wrap{right:64px}#sonido-chat-balloon{right:190px}}
 #sonido-chat-balloon{position:fixed;bottom:36px;right:140px;background:#fff;border:1px solid #e0e0e0;border-radius:12px 12px 0 12px;padding:8px 14px;font-size:13px;color:#333;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.12);z-index:9997;animation:balloon-in .3s ease}
+#sonido-chat-balloon{display:none}
+@media(min-width:768px){#sonido-chat-balloon{display:block}}
 #sonido-chat-balloon::after{content:'';position:absolute;bottom:0;right:-8px;width:0;height:0;border:8px solid transparent;border-left-color:#fff;border-bottom:0}
 @keyframes balloon-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     #sonido-chat-wrap{position:fixed;bottom:90px;right:24px;width:340px;height:480px;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:9998;display:none;flex-direction:column;overflow:hidden;font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif}
