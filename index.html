@@ -230,7 +230,8 @@ window.onload = function() {
     if (settings.name) {
       document.getElementById('s-name').value = settings.name;
       document.getElementById('s-contact-url').value = settings.contactUrl || '';
-      document.getElementById('s-content').value = settings.content || '';
+document.getElementById('s-tel').value = settings.tel || '';
+document.getElementById('s-content').value = settings.content || '';
       updateLabel();
     }
   } catch(e) {}
