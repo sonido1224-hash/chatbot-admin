@@ -295,7 +295,8 @@ async function fetchSiteContent() {
 function saveSettings() {
   settings.name = document.getElementById('s-name').value.trim();
   settings.contactUrl = document.getElementById('s-contact-url').value.trim();
-  settings.content = document.getElementById('s-content').value.trim();
+settings.tel = document.getElementById('s-tel').value.trim();
+settings.content = document.getElementById('s-content').value.trim();
   if (!settings.name) { showStatus('save-status','会社名を入力してください','err'); return; }
   if (!settings.content) { showStatus('save-status','サイトの内容を入力してください','err'); return; }
   saveToStorage();
