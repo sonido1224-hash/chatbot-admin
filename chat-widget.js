@@ -1,10 +1,7 @@
 (function() {
   const VERCEL_URL = 'https://chatbot-admin-eight.vercel.app';
-  const COMPANY = document.currentScript.getAttribute('data-company') || 'AIアシスタント';
+  const GAS_URL = document.currentScript.getAttribute('data-gas-url') || '';
   const COLOR = document.currentScript.getAttribute('data-color') || '#1a1a2e';
-  const CONTACT = document.currentScript.getAttribute('data-contact') || '';
-  const TEL = document.currentScript.getAttribute('data-tel') || '';
-  const SYSTEM = document.currentScript.getAttribute('data-system') || '';
 
   const style = document.createElement('style');
   style.textContent = `
@@ -51,8 +48,8 @@
       <div class="sc-header">
         <div class="sc-avatar">💬</div>
         <div>
-          <div class="sc-name">${COMPANY}</div>
-          <div class="sc-status"><span class="sc-dot"></span>AIアシスタント · 24時間対応</div>
+          <div class="sc-name" id="sc-name">AIアシスタント</div>
+          <div class="sc-status"><span class="sc-dot"></span>24時間対応</div>
         </div>
         <button class="sc-close" id="sc-close">✕</button>
       </div>
@@ -64,10 +61,26 @@
     </div>
   `);
 
+  let siteSettings = null;
   let history = [];
   let msgCount = 0;
   let busy = false;
   let initialized = false;
+
+  // GASから設定を取得
+  async function loadSettings() {
+    if (!GAS_URL) return;
+    try {
+      const res = await fetch(GAS_URL);
+      const data = await res.json();
+      if (data.settings) {
+        siteSettings = data.settings;
+        document.getElementById('sc-name').textContent = siteSettings.name + ' のBot';
+      }
+    } catch(e) {}
+  }
+
+  loadSettings();
 
   const btn = document.getElementById('sonido-chat-btn');
   const wrap = document.getElementById('sonido-chat-wrap');
@@ -80,7 +93,8 @@
     wrap.classList.toggle('open');
     if (!initialized) {
       initialized = true;
-      addBot(`こんにちは！${COMPANY}のAIアシスタントです。\nご質問はお気軽にどうぞ 😊`,
+      const name = siteSettings?.name || 'AIアシスタント';
+      addBot(`こんにちは！${name}のAIアシスタントです。\nご質問はお気軽にどうぞ 😊`,
         ['サービス内容を教えて', '料金はいくら？', '無料相談したい']);
     }
   };
@@ -96,8 +110,19 @@
     addUser(msg);
     setBusy(true);
 
-    const systemPrompt = SYSTEM ||
-      `あなたは「${COMPANY}」のAIアシスタントです。ルール：2〜3文で簡潔に答える。マークダウン記法は使わない。会話を続けやすいよう最後に短い質問を1つ添える。サイト情報にないことは「詳しくはお問い合わせください」と答える。`;
+    const name = siteSettings?.name || 'AIアシスタント';
+    const content = siteSettings?.content || '';
+    const qaList = siteSettings?.qaList || [];
+
+    // Q&Aマッチング
+    const matched = qaList.find(qa => {
+      const kws = qa.q.split(/[？?、。\s]/).filter(k => k.length >= 2);
+      return kws.some(kw => msg.includes(kw));
+    });
+
+    const systemPrompt = matched
+      ? `ユーザーが「${matched.q}」について聞いています。必ず次の内容で答えてください：「${matched.a}」マークダウン記法は使わない。`
+      : `あなたは「${name}」のAIアシスタントです。\n=== サイト情報 ===\n${content}\n=== ここまで ===\nルール：2〜3文で簡潔に答える。マークダウン記法は使わない。最後に短い質問を1つ添える。サイト情報にないことは「詳しくはお問い合わせください」と答える。`;
 
     try {
       const res = await fetch(`${VERCEL_URL}/api/chat`, {
@@ -128,9 +153,11 @@
       });
       d.appendChild(qr);
     }
-    if (cta) {
+    if (cta && siteSettings) {
       const c = document.createElement('div'); c.className = 'sc-cta';
-      c.innerHTML = `<div class="sc-cta-t">📩 無料相談受付中</div><div class="sc-cta-b">相談だけでも大歓迎！${TEL ? '<br>📞 ' + TEL : ''}</div>${CONTACT ? `<a href="${CONTACT}" class="sc-cta-btn">無料相談を申し込む →</a>` : ''}`;
+      const tel = siteSettings.tel ? `<br>📞 ${siteSettings.tel}` : '';
+      const contactUrl = siteSettings.contactUrl || '';
+      c.innerHTML = `<div class="sc-cta-t">📩 無料相談受付中</div><div class="sc-cta-b">相談だけでも大歓迎！${tel}</div>${contactUrl ? `<a href="${contactUrl}" class="sc-cta-btn">無料相談を申し込む →</a>` : ''}`;
       d.appendChild(c);
     }
     messages.appendChild(d);
