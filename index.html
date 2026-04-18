@@ -377,7 +377,7 @@ function addBotMsg(text, quick, cta) {
   }
   if (cta && settings.contactUrl) {
     const c = document.createElement('div'); c.className = 'cta-card';
-    c.innerHTML = `<div class="cta-t">📩 無料相談受付中</div><div class="cta-b">相談だけでも大歓迎！</div><a href="${settings.contactUrl}" class="cta-btn" style="text-decoration:none;display:inline-block">無料相談を申し込む →</a>`;
+    c.innerHTML = `<div class="cta-t">📩 無料相談受付中</div><div class="cta-b">相談だけでも大歓迎！${settings.tel ? `<br>📞 ${settings.tel}` : ''}</div><a href="${settings.contactUrl}" class="cta-btn" style="text-decoration:none;display:inline-block">無料相談を申し込む →</a>`;
     d.appendChild(c);
   }
   box.appendChild(d); box.scrollTop = box.scrollHeight;
