@@ -120,7 +120,8 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
     <div class="card-title">基本情報</div>
     <div class="row2">
       <div class="field"><label>会社名</label><input id="s-name" placeholder="例：山田Web制作" oninput="updateLabel()"></div>
-      <div class="field"><label>お問い合わせURL</label><input id="s-contact-url" placeholder="https://yoursite.com/contact"></div>
+      <div class="field"><label>GASのURL</label><input id="s-key" placeholder="https://script.google.com/macros/s/xxx/exec"></div>
+<div class="field"><label>お問い合わせURL</label><input id="s-contact-url" placeholder="https://yoursite.com/contact"></div>
 <div class="field"><label>電話番号（任意・空欄なら非表示）</label><input id="s-tel" placeholder="例：03-1234-5678"></div>
     </div>
   </div>
@@ -229,7 +230,8 @@ window.onload = function() {
     logs = JSON.parse(localStorage.getItem('cbot_logs') || '[]');
     if (settings.name) {
       document.getElementById('s-name').value = settings.name;
-      document.getElementById('s-contact-url').value = settings.contactUrl || '';
+      document.getElementById('s-key').value = settings.gasUrl || '';
+document.getElementById('s-contact-url').value = settings.contactUrl || '';
 document.getElementById('s-tel').value = settings.tel || '';
 document.getElementById('s-content').value = settings.content || '';
       updateLabel();
@@ -244,6 +246,23 @@ function saveToStorage() {
   localStorage.setItem('cbot_settings', JSON.stringify(settings));
   localStorage.setItem('cbot_qa', JSON.stringify(qaList));
   localStorage.setItem('cbot_logs', JSON.stringify(logs));
+  // GASにも保存
+  if (settings.gasUrl) {
+    fetch(settings.gasUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'save_settings',
+        settings: {
+          name: settings.name,
+          content: settings.content,
+          contactUrl: settings.contactUrl,
+          tel: settings.tel,
+          qaList: qaList
+        }
+      })
+    }).catch(e => console.log('GAS保存エラー:', e));
+  }
 }
 
 function showPage(id) {
@@ -284,7 +303,8 @@ async function fetchSiteContent() {
 
 function saveSettings() {
   settings.name = document.getElementById('s-name').value.trim();
-  settings.contactUrl = document.getElementById('s-contact-url').value.trim();
+  settings.gasUrl = document.getElementById('s-key').value.trim();
+settings.contactUrl = document.getElementById('s-contact-url').value.trim();
 settings.tel = document.getElementById('s-tel').value.trim();
 settings.content = document.getElementById('s-content').value.trim();
   if (!settings.name) { showStatus('save-status','会社名を入力してください','err'); return; }
