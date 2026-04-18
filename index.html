@@ -397,7 +397,7 @@ function loadFromStorage() {
     logs = l;
     if (settings.name) {
       document.getElementById('s-name').value = settings.name;
-      document.getElementById('s-key').value = settings.key || '';
+      document.getElementById('s-key').value = settings.gasUrl || '';
       document.getElementById('s-contact-url').value = settings.contactUrl || '';
       document.getElementById('s-content').value = settings.content || '';
       updateLabel();
