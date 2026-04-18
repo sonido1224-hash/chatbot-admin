@@ -100,8 +100,11 @@ async function loadSettings() {
   const input = document.getElementById('sc-input');
   const send = document.getElementById('sc-send');
 
-  btn.onclick = () => {
+btn.onclick = () => {
     wrap.classList.toggle('open');
+    // 吹き出しを消す
+    const balloon = document.getElementById('sonido-chat-balloon');
+    if (balloon) balloon.remove();
     if (!initialized) {
       initialized = true;
       const name = siteSettings?.name || 'AIアシスタント';
