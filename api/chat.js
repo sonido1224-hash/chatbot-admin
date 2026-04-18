@@ -14,8 +14,8 @@ if (req.body.action === 'fetch_site') {
       
       // WordPress REST APIで投稿・固定ページを取得
       const [postsRes, pagesRes] = await Promise.all([
-        fetch(`${baseUrl}/wp-json/wp/v2/posts?per_page=20&_fields=title,content,excerpt`),
-        fetch(`${baseUrl}/wp-json/wp/v2/pages?per_page=20&_fields=title,content,excerpt`)
+        fetch(`${baseUrl}/wp-json/wp/v2/posts?per_page=10&_fields=title,content,excerpt`),
+        fetch(`${baseUrl}/wp-json/wp/v2/pages?per_page=10&_fields=title,content`)
       ]);
 
       let content = '';
@@ -28,7 +28,7 @@ if (req.body.action === 'fetch_site') {
             .replace(/<[^>]+>/g, ' ')
             .replace(/\s{3,}/g, '\n')
             .trim();
-          content += `\n\n【記事】${title}\n${text.slice(0, 500)}`;
+          content += `\n\n【記事】${title}\n${text.slice(0, 1000)}`;
         });
       }
 
@@ -40,7 +40,7 @@ if (req.body.action === 'fetch_site') {
             .replace(/<[^>]+>/g, ' ')
             .replace(/\s{3,}/g, '\n')
             .trim();
-          content += `\n\n【ページ】${title}\n${text.slice(0, 500)}`;
+          content += `\n\n【ページ】${title}\n${text.slice(0, 2000)}`;
         });
       }
 
