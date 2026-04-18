@@ -165,9 +165,20 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
 
   <div class="card">
     <div class="card-title">サイトの内容（AIの知識ベースになります）</div>
-    <div class="field"><label>サイトのテキストを貼り付け（CtrlA → CtrlC → ここにCtrlV）</label>
-    <textarea id="s-content" style="min-height:140px" placeholder="サービス内容、料金、よくある質問、営業時間、連絡先など&#10;何でもOKです。多いほどAIの回答精度が上がります。&#10;&#10;例：&#10;【サービス】ホームページ制作30万円〜、LP15万円〜&#10;【営業時間】平日10:00〜18:00&#10;【よくある質問】分割払い可、全国対応..."></textarea></div>
-    <div class="info-box">💡 サイトを更新したらここのテキストも貼り替えるだけで完了です。</div>
+    <div class="field">
+      <label>① URLで自動取得</label>
+      <div style="display:flex;gap:8px">
+        <input id="s-url" type="url" placeholder="https://yoursite.com" style="flex:1">
+        <button class="btn btn-blue" id="fetch-btn" onclick="fetchSiteContent()" style="white-space:nowrap">読み込む</button>
+      </div>
+      <div id="fetch-status" style="margin-top:6px"></div>
+    </div>
+    <div style="text-align:center;font-size:11px;color:#aaa;margin:2px 0 8px">── または ──</div>
+    <div class="field">
+      <label>② テキストを直接貼り付け（確実・おすすめ）</label>
+      <textarea id="s-content" style="min-height:120px" placeholder="サービス内容、料金、よくある質問、営業時間、連絡先など&#10;何でもOKです。多いほどAIの回答精度が上がります。&#10;&#10;例：&#10;【サービス】ホームページ制作30万円〜、LP15万円〜&#10;【営業時間】平日10:00〜18:00&#10;【よくある質問】分割払い可、全国対応..."></textarea>
+    </div>
+    <div class="info-box">💡 URLで取得できない場合はサイトをブラウザで開いてCtrl+A→Ctrl+Cでコピーして②に貼り付けてください。サイトを更新したらここのテキストも貼り替えるだけで完了です。</div>
   </div>
 
   <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;padding:13px;font-size:14px;border-radius:10px">設定を保存して開始する →</button>
@@ -415,6 +426,51 @@ function showPage(id) {
 function updateLabel() {
   const name = document.getElementById('s-name').value;
   document.getElementById('company-label').textContent = name || '未設定';
+}
+
+async function fetchSiteContent() {
+  const url = document.getElementById('s-url').value.trim();
+  if (!url) return;
+  const statusEl = document.getElementById('fetch-status');
+  const btn = document.getElementById('fetch-btn');
+  statusEl.innerHTML = '<div class="status s-load">読み込み中...</div>';
+  btn.disabled = true;
+
+  const PROXIES = [
+    u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://thingproxy.freeboard.io/fetch/${u}`,
+  ];
+
+  let extracted = '';
+  for (const proxy of PROXIES) {
+    try {
+      const res = await fetch(proxy(url), { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) continue;
+      const ct = res.headers.get('content-type') || '';
+      let html = ct.includes('json') ? (await res.json()).contents || '' : await res.text();
+      if (!html) continue;
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html
+        .replace(/<script[\s\S]*?<\/script>/gi,'')
+        .replace(/<style[\s\S]*?<\/style>/gi,'')
+        .replace(/<nav[\s\S]*?<\/nav>/gi,'')
+        .replace(/<footer[\s\S]*?<\/footer>/gi,'')
+        .replace(/<header[\s\S]*?<\/header>/gi,'');
+      extracted = (tmp.innerText || tmp.textContent || '')
+        .replace(/\s{3,}/g,'\n\n').replace(/\n{4,}/g,'\n\n').trim();
+      if (extracted.length > 80) break;
+    } catch(e) { continue; }
+  }
+
+  btn.disabled = false;
+  if (extracted.length < 80) {
+    statusEl.innerHTML = '<div class="status s-err">❌ 自動取得できませんでした。②の貼り付け欄に直接コピーしてください。</div>';
+    return;
+  }
+  const content = extracted.slice(0, 5000);
+  document.getElementById('s-content').value = content;
+  statusEl.innerHTML = `<div class="status s-ok">✅ 取得完了（${extracted.length}文字）。②の欄に反映されました。確認して保存してください。</div>`;
 }
 
 function saveSettings() {
