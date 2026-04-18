@@ -515,14 +515,11 @@ async function chatSend(text) {
   const matched = findQA(msg);
   let reply = '', type = 'ai';
 
-  if (!settings.key) {
-    await new Promise(r => setTimeout(r, 600));
-    reply = matched
-      ? matched.a
-      : `「${msg}」についてですね。詳しくはお気軽にお問い合わせください。（※APIキーを設定すると本物のAIが動きます）`;
-    type = matched ? 'custom' : 'demo';
-  } else {
-    const systemPrompt = matched
+if (!settings.gasUrl) {
+      reply = 'GASのURLが設定されていません。初期設定から設定してください。';
+      type = 'demo';
+    } else {
+      const systemPrompt = matched
       ? `ユーザーが「${matched.q}」について聞いています。必ず次の内容を使って自然に答えてください：「${matched.a}」`
       : buildSystem();
     const newHistory = [...chatHistory, { role:'user', content: msg }];
