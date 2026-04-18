@@ -321,7 +321,7 @@ function doPost(e) {
     ? `ユーザーが「${matched.q}」について聞いています。必ず次の内容を使って答えてください：「${matched.a}」。自然な文章で丁寧に。`
     : `あなたは${COMPANY_NAME}のAIアシスタントです。\n${SITE_CONTENT}\nルール：2〜3文で簡潔に。書いていないことは「お問い合わせください」と答える。`;
 
-  const res = UrlFetchApp.fetch("https://api.anthropic.com/v1/messages", {
+  const res = UrlFetchApp.fetch("https://script.google.com/macros/s/AKfycbxfaeNtHHLhP0e6yWRPnjeSt5nmxLBppPQ2FrvYT272dZUqZu9KBpKvVMbYZyiIODg/exec", {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -527,7 +527,7 @@ async function chatSend(text) {
       : buildSystem();
     const newHistory = [...chatHistory, { role:'user', content: msg }];
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbxfaeNtHHLhP0e6yWRPnjeSt5nmxLBppPQ2FrvYT272dZUqZu9KBpKvVMbYZyiIODg/exec', {
         method:'POST',
         headers:{'Content-Type':'application/json','x-api-key':settings.key,'anthropic-version':'2023-06-01'},
         body:JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:300, system:systemPrompt, messages:newHistory })
