@@ -524,11 +524,11 @@ if (!settings.gasUrl) {
       : buildSystem();
     const newHistory = [...chatHistory, { role:'user', content: msg }];
     try {
-      const res = await fetch(settings.gasUrl, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-api-key':settings.key,'anthropic-version':'2023-06-01'},
-        body:JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:300, system:systemPrompt, messages:newHistory })
-      });
+      const res = await fetch('/api/chat', {
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({ message: msg, history: chatHistory, systemPrompt })
+});
       if (!res.ok) throw new Error('API error');
       const data = await res.json();
       reply = data.content?.[0]?.text || 'もう一度お試しください。';
