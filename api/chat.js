@@ -61,7 +61,34 @@ if (req.body.action === 'fetch_site') {
       return res.status(500).json({ error: 'サイトの取得に失敗しました' });
     }
   }
+// GASに設定を保存
+  if (req.body.action === 'save_settings') {
+    try {
+      const gasRes = await fetch(req.body.gasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'save_settings',
+          settings: req.body.settings
+        })
+      });
+      const data = await gasRes.json();
+      return res.status(200).json(data);
+    } catch(e) {
+      return res.status(500).json({ error: e.message });
+    }
+  }
 
+  // GASから設定を取得
+  if (req.body.action === 'get_settings') {
+    try {
+      const gasRes = await fetch(req.body.gasUrl);
+      const data = await gasRes.json();
+      return res.status(200).json(data);
+    } catch(e) {
+      return res.status(500).json({ error: e.message });
+    }
+  }
   // チャット機能
   const { message, history, systemPrompt } = req.body;
 
