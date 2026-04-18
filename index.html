@@ -247,12 +247,14 @@ function saveToStorage() {
   localStorage.setItem('cbot_qa', JSON.stringify(qaList));
   localStorage.setItem('cbot_logs', JSON.stringify(logs));
   // GASにも保存
+ // Vercel経由でGASに保存
   if (settings.gasUrl) {
-    fetch(settings.gasUrl, {
+    fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         action: 'save_settings',
+        gasUrl: settings.gasUrl,
         settings: {
           name: settings.name,
           content: settings.content,
