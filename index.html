@@ -264,33 +264,22 @@ async function fetchSiteContent() {
   if (!url) return;
   const statusEl = document.getElementById('fetch-status');
   const btn = document.getElementById('fetch-btn');
-  statusEl.innerHTML = '<div class="status s-load">読み込み中...</div>';
+  statusEl.innerHTML = '<div class="status s-load">読み込み中...（少し時間がかかります）</div>';
   btn.disabled = true;
-  const PROXIES = [
-    u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-  ];
-  let extracted = '';
-  for (const proxy of PROXIES) {
-    try {
-      const res = await fetch(proxy(url), { signal: AbortSignal.timeout(8000) });
-      if (!res.ok) continue;
-      const ct = res.headers.get('content-type') || '';
-      let html = ct.includes('json') ? (await res.json()).contents || '' : await res.text();
-      if (!html) continue;
-      const tmp = document.createElement('div');
-      tmp.innerHTML = html.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<style[\s\S]*?<\/style>/gi,'');
-      extracted = (tmp.innerText || tmp.textContent || '').replace(/\s{3,}/g,'\n\n').trim();
-      if (extracted.length > 80) break;
-    } catch(e) { continue; }
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'fetch_site', url })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    document.getElementById('s-content').value = data.content;
+    statusEl.innerHTML = `<div class="status s-ok">✅ 取得完了（${data.content.length}文字）確認して保存してください。</div>`;
+  } catch(e) {
+    statusEl.innerHTML = '<div class="status s-err">❌ 取得できませんでした。直接貼り付けてください。</div>';
   }
   btn.disabled = false;
-  if (extracted.length < 80) {
-    statusEl.innerHTML = '<div class="status s-err">❌ 取得できませんでした。直接貼り付けてください。</div>';
-    return;
-  }
-  document.getElementById('s-content').value = extracted.slice(0, 5000);
-  statusEl.innerHTML = `<div class="status s-ok">✅ 取得完了（${extracted.length}文字）</div>`;
 }
 
 function saveSettings() {
