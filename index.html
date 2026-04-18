@@ -475,7 +475,7 @@ async function fetchSiteContent() {
 
 function saveSettings() {
   settings.name = document.getElementById('s-name').value.trim();
-  settings.key = document.getElementById('s-key').value.trim();
+  settings.gasUrl = document.getElementById('s-key').value.trim();
   settings.contactUrl = document.getElementById('s-contact-url').value.trim();
   settings.content = document.getElementById('s-content').value.trim();
   if (!settings.name) { showStatus('save-status', '会社名を入力してください', 'err'); return; }
