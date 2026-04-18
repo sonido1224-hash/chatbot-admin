@@ -7,6 +7,31 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  // サイト取得機能
+  if (req.body.action === 'fetch_site') {
+    try {
+      const siteRes = await fetch(req.body.url);
+      const html = await siteRes.text();
+      
+      // HTMLからテキストを抽出
+      const text = html
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '')
+        .replace(/<nav[\s\S]*?<\/nav>/gi, '')
+        .replace(/<footer[\s\S]*?<\/footer>/gi, '')
+        .replace(/<header[\s\S]*?<\/header>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s{3,}/g, '\n\n')
+        .trim()
+        .slice(0, 8000);
+
+      return res.status(200).json({ content: text });
+    } catch (e) {
+      return res.status(500).json({ error: 'サイトの取得に失敗しました' });
+    }
+  }
+
+  // チャット機能
   const { message, history, systemPrompt } = req.body;
 
   try {
