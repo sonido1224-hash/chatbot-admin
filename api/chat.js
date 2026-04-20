@@ -7,70 +7,51 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // サイト取得機能
-if (req.body.action === 'fetch_site') {
+  const body = req.body;
+
+  // サイト取得
+  if (body.action === 'fetch_site') {
     try {
-      const baseUrl = req.body.url.replace(/\/$/, '');
-      
-      // WordPress REST APIで投稿・固定ページを取得
+      const baseUrl = body.url.replace(/\/$/, '');
       const [postsRes, pagesRes] = await Promise.all([
-        fetch(`${baseUrl}/wp-json/wp/v2/posts?per_page=10&_fields=title,content,excerpt`),
+        fetch(`${baseUrl}/wp-json/wp/v2/posts?per_page=5&_fields=title,content,excerpt`),
         fetch(`${baseUrl}/wp-json/wp/v2/pages?per_page=10&_fields=title,content`)
       ]);
-
       let content = '';
-
       if (postsRes.ok) {
         const posts = await postsRes.json();
         posts.forEach(p => {
           const title = p.title?.rendered || '';
-          const text = (p.content?.rendered || p.excerpt?.rendered || '')
-            .replace(/<[^>]+>/g, ' ')
-            .replace(/\s{3,}/g, '\n')
-            .trim();
-          content += `\n\n【記事】${title}\n${text.slice(0, 1000)}`;
+          const text = (p.content?.rendered || '').replace(/<[^>]+>/g,' ').replace(/\s{3,}/g,'\n').trim();
+          content += `\n\n【記事】${title}\n${text.slice(0,500)}`;
         });
       }
-
       if (pagesRes.ok) {
         const pages = await pagesRes.json();
         pages.forEach(p => {
           const title = p.title?.rendered || '';
-          const text = (p.content?.rendered || '')
-            .replace(/<[^>]+>/g, ' ')
-            .replace(/\s{3,}/g, '\n')
-            .trim();
-          content += `\n\n【ページ】${title}\n${text.slice(0, 2000)}`;
+          const text = (p.content?.rendered || '').replace(/<[^>]+>/g,' ').replace(/\s{3,}/g,'\n').trim();
+          content += `\n\n【ページ】${title}\n${text.slice(0,1500)}`;
         });
       }
-
-      // REST APIが使えない場合はトップページのみ取得
       if (!content) {
         const siteRes = await fetch(baseUrl);
         const html = await siteRes.text();
-        content = html
-          .replace(/<script[\s\S]*?<\/script>/gi, '')
-          .replace(/<style[\s\S]*?<\/style>/gi, '')
-          .replace(/<[^>]+>/g, ' ')
-          .replace(/\s{3,}/g, '\n\n')
-          .trim();
+        content = html.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<style[\s\S]*?<\/style>/gi,'').replace(/<[^>]+>/g,' ').replace(/\s{3,}/g,'\n\n').trim();
       }
-
-      return res.status(200).json({ content: content.trim().slice(0, 15000) });
-    } catch (e) {
+      return res.status(200).json({ content: content.trim().slice(0,15000) });
+    } catch(e) {
       return res.status(500).json({ error: 'サイトの取得に失敗しました' });
     }
   }
-// GASに設定を保存
-  if (req.body.action === 'save_settings') {
+
+  // GASへの中継（ログイン・設定・クライアント管理）
+  if (['login','get_settings','save_settings','get_clients','add_client'].includes(body.action)) {
     try {
-      const gasRes = await fetch(req.body.gasUrl, {
+      const gasRes = await fetch(body.gasUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'save_settings',
-          settings: req.body.settings
-        })
+        body: JSON.stringify(body)
       });
       const data = await gasRes.json();
       return res.status(200).json(data);
@@ -79,40 +60,30 @@ if (req.body.action === 'fetch_site') {
     }
   }
 
-  // GASから設定を取得
-  if (req.body.action === 'get_settings') {
+  // チャット
+  if (body.action === 'chat') {
     try {
-      const gasRes = await fetch(req.body.gasUrl);
-      const data = await gasRes.json();
-      return res.status(200).json(data);
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 150,
+          system: body.systemPrompt,
+          messages: [...(body.history || []), { role: 'user', content: body.message }]
+        })
+      });
+      const data = await response.json();
+      const reply = data.content?.[0]?.text || 'エラーが発生しました。';
+      return res.status(200).json({ reply });
     } catch(e) {
       return res.status(500).json({ error: e.message });
     }
   }
-  // チャット機能
-  const { message, history, systemPrompt } = req.body;
 
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 150,
-        system: systemPrompt,
-        messages: [...(history || []), { role: 'user', content: message }]
-      })
-    });
-
-    const data = await response.json();
-    const reply = data.content?.[0]?.text || 'エラーが発生しました。';
-    res.status(200).json({ reply, type: 'ai' });
-
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  return res.status(400).json({ error: 'Unknown action' });
 }
