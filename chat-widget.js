@@ -145,7 +145,7 @@ btn.onclick = () => {
       const res = await fetch(`${VERCEL_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, history, systemPrompt })
+        body: JSON.stringify({ action: 'chat', message: msg, history, systemPrompt })
       });
       const data = await res.json();
       const reply = data.reply || 'もう一度お試しください。';
