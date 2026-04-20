@@ -1,6 +1,7 @@
 (function() {
   const VERCEL_URL = 'https://chatbot-admin-eight.vercel.app';
   const GAS_URL = document.currentScript.getAttribute('data-gas-url') || '';
+const CLIENT_ID = document.currentScript.getAttribute('data-client-id') || 'sonido';
   const COLOR = document.currentScript.getAttribute('data-color') || '#1976D2';
 
   const style = document.createElement('style');
