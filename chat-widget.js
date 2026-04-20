@@ -42,6 +42,10 @@ const CLIENT_ID = document.currentScript.getAttribute('data-client-id') || 'soni
     .sc-typing span:nth-child(2){animation-delay:.2s}
     .sc-typing span:nth-child(3){animation-delay:.4s}
     @keyframes scbob{0%,80%,100%{transform:translateY(0);opacity:.3}40%{transform:translateY(-4px);opacity:1}}
+    .sc-footer{padding:8px 10px;border-top:1px solid #eee;background:#f7f8fc;display:flex;gap:6px;justify-content:center}
+.sc-footer-btn{padding:6px 14px;font-size:11px;font-weight:600;border-radius:20px;border:none;cursor:pointer;text-decoration:none;display:inline-block}
+.sc-footer-contact{background:#3b5bdb;color:#fff}
+.sc-footer-tel{background:#fff;color:#1a1a2e;border:1px solid #ddd}
     .sc-input-row{padding:8px 10px;border-top:1px solid #eee;display:flex;gap:6px;background:#fff}
     .sc-input{flex:1;padding:7px 12px;font-size:13px;border:1px solid #e0e0e0;border-radius:20px;outline:none;font-family:inherit}
     .sc-send{width:34px;height:34px;border-radius:50%;background:${COLOR};color:#fff;border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -62,6 +66,7 @@ const CLIENT_ID = document.currentScript.getAttribute('data-client-id') || 'soni
         <button class="sc-close" id="sc-close">✕</button>
       </div>
       <div class="sc-messages" id="sc-messages"></div>
+      <div class="sc-footer" id="sc-footer"></div>
       <div class="sc-input-row">
         <input class="sc-input" id="sc-input" placeholder="質問を入力...">
         <button class="sc-send" id="sc-send">➤</button>
@@ -90,9 +95,19 @@ async function loadSettings() {
       });
       const data = await res.json();
       if (data.settings) {
-        siteSettings = data.settings;
-        document.getElementById('sc-name').textContent = siteSettings.name + ' のBot';
-      }
+  siteSettings = data.settings;
+  document.getElementById('sc-name').textContent = siteSettings.name + ' のBot';
+  // フッターボタンを表示
+  const footer = document.getElementById('sc-footer');
+  let footerHtml = '';
+  if (siteSettings.contactUrl) {
+    footerHtml += `<a href="${siteSettings.contactUrl}" class="sc-footer-btn sc-footer-contact">📩 無料相談する</a>`;
+  }
+  if (siteSettings.tel) {
+    footerHtml += `<a href="tel:${siteSettings.tel}" class="sc-footer-btn sc-footer-tel">📞 ${siteSettings.tel}</a>`;
+  }
+  footer.innerHTML = footerHtml;
+}
     } catch(e) {}
   }
 
