@@ -4,6 +4,7 @@
 const CLIENT_ID = document.currentScript.getAttribute('data-client-id') || 'sonido';
 const BOTTOM = document.currentScript.getAttribute('data-bottom') || '24px';
 const RIGHT = document.currentScript.getAttribute('data-right') || '24px';
+  const QUICK = document.currentScript.getAttribute('data-quick') || 'サービス内容を教えて,料金はいくら？,無料相談したい';
   const COLOR = document.currentScript.getAttribute('data-color') || '#1976D2';
 
   const style = document.createElement('style');
@@ -131,7 +132,7 @@ btn.onclick = () => {
       initialized = true;
       const name = siteSettings?.name || 'AIアシスタント';
       addBot(`こんにちは！${name}のAIアシスタントです。\nご質問はお気軽にどうぞ 😊`,
-        ['サービス内容を教えて', '料金はいくら？', '無料相談したい']);
+  QUICK.split(','));
     }
   };
   closeBtn.onclick = () => wrap.classList.remove('open');
