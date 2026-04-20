@@ -17,7 +17,7 @@ const RIGHT = document.currentScript.getAttribute('data-right') || '24px';
 @media(min-width:768px){#sonido-chat-balloon{display:block}}
 #sonido-chat-balloon::after{content:'';position:absolute;bottom:0;right:-8px;width:0;height:0;border:8px solid transparent;border-left-color:#fff;border-bottom:0}
 @keyframes balloon-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    #sonido-chat-wrap{position:fixed;bottom:90px;right:${RIGHT};width:340px;height:480px;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:9998;display:none;flex-direction:column;overflow:hidden;font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif}
+    #sonido-chat-wrap{position:fixed;bottom:calc(${BOTTOM} + 66px);right:${RIGHT};width:340px;height:480px;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:9998;display:none;flex-direction:column;overflow:hidden;font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif}
     #sonido-chat-wrap.open{display:flex}
     .sc-header{background:${COLOR};padding:12px 16px;display:flex;align-items:center;gap:10px;color:#fff}
     .sc-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:16px}
