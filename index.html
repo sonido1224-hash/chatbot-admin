@@ -43,16 +43,10 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
 .metric-label{font-size:11px;color:#888;margin-bottom:4px}
 .metric-val{font-size:22px;font-weight:700;color:#1a1a2e}
 .metric-sub{font-size:11px;color:#aaa;margin-top:3px}
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.bar-label{font-size:12px;color:#555;min-width:130px}
-.bar-track{flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
-.bar-fill{height:100%;border-radius:4px;background:#4a6fa5;transition:width .5s}
-.bar-count{font-size:12px;color:#888;min-width:30px;text-align:right}
 .log-table{width:100%;border-collapse:collapse;font-size:12px}
 .log-table th{text-align:left;padding:8px 10px;border-bottom:2px solid #eee;color:#888;font-weight:600;font-size:11px}
 .log-table td{padding:8px 10px;border-bottom:1px solid #f5f5f5;color:#333}
 .tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px}
-.tag-auto{background:#e8f5e9;color:#2e7d32}
 .tag-custom{background:#e8f0fe;color:#1a56db}
 .tag-ai{background:#f3e5f5;color:#6a1b9a}
 .qa-item{border:1px solid #e8e8e8;border-radius:10px;padding:13px 15px;margin-bottom:10px;background:#fff}
@@ -60,8 +54,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
 .qa-a{font-size:12px;color:#555;line-height:1.6;margin-bottom:8px}
 .qa-footer{display:flex;align-items:center;gap:8px}
 .qa-cat{font-size:10px;padding:2px 8px;border-radius:20px;background:#e8f0fe;color:#1a56db;font-weight:600}
-.qa-priority{font-size:10px;padding:2px 8px;border-radius:20px;background:#fff8e1;color:#f57f17;font-weight:600}
-.qa-actions{margin-left:auto;display:flex;gap:6px}
+.qa-actions{margin-left:auto}
 .chat-wrap{max-width:380px;margin:0 auto;border:1px solid #e0e0e0;border-radius:14px;overflow:hidden}
 .chat-header{background:#1a1a2e;padding:11px 14px;display:flex;align-items:center;gap:9px}
 .chat-avatar{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px}
@@ -72,7 +65,6 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
 .msg{display:flex;flex-direction:column}
 .msg.bot{align-items:flex-start}
 .msg.user{align-items:flex-end}
-.mlabel{font-size:10px;color:#bbb;margin-bottom:2px;padding-left:2px}
 .bubble{max-width:82%;padding:8px 12px;font-size:13px;line-height:1.6;box-shadow:0 1px 3px rgba(0,0,0,.07);white-space:pre-wrap;word-break:break-word}
 .bubble.bot{background:#fff;color:#1a1a2e;border-radius:12px 12px 12px 3px}
 .bubble.user{background:#1a1a2e;color:#fff;border-radius:12px 12px 3px 12px}
@@ -93,15 +85,36 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
 .send-btn:not(:disabled){background:#1a1a2e;color:#fff}
 .send-btn:disabled{background:#e5e5e5;color:#aaa;cursor:default}
 .info-box{background:#e8f0fe;border-left:3px solid #4a6fa5;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#1a56db;margin:10px 0;line-height:1.7}
-.warn-box{background:#fff8e1;border-left:3px solid #f9a825;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#795548;margin:10px 0;line-height:1.7}
 .status{padding:8px 12px;border-radius:8px;font-size:12px;margin-top:8px}
 .s-ok{background:#e8f5e9;color:#2e7d32}
 .s-err{background:#fdecea;color:#b71c1c}
 .s-load{background:#fff8e1;color:#795548}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f0f2f5}
+.login-card{background:#fff;border-radius:16px;padding:40px;width:360px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.login-logo{font-size:20px;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.login-sub{font-size:12px;color:#888;margin-bottom:28px}
+.login-err{background:#fdecea;color:#b71c1c;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:16px;display:none}
+.client-item{border:1px solid #e8e8e8;border-radius:10px;padding:13px 15px;margin-bottom:10px;background:#fff;display:flex;align-items:center;gap:12px}
+.client-id{font-size:12px;font-weight:700;color:#4a6fa5;background:#e8f0fe;padding:3px 8px;border-radius:6px}
+.client-name{font-size:13px;font-weight:600;color:#1a1a2e}
+.client-site{font-size:11px;color:#888}
 </style>
 </head>
 <body>
-<div class="app">
+
+<div class="login-wrap" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">チャットBot管理</div>
+    <div class="login-sub">IDとパスワードを入力してください</div>
+    <div class="login-err" id="login-err"></div>
+    <div class="field"><label>ID</label><input id="login-id" placeholder="例：sonido" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="field"><label>パスワード</label><input id="login-pass" type="password" placeholder="パスワード" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn btn-primary" onclick="doLogin()" style="width:100%;padding:12px;font-size:14px;margin-top:8px">ログイン →</button>
+    <div id="login-status" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<div class="app" id="main-screen" style="display:none">
 <div class="sidebar">
   <div class="logo">チャットBot管理<span id="company-label">未設定</span></div>
   <div class="nav-label">メニュー</div>
@@ -109,24 +122,30 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
   <button class="nav-btn" onclick="showPage('chat')"><span class="nav-icon">💬</span>チャット確認</button>
   <button class="nav-btn" onclick="showPage('qa')"><span class="nav-icon">📋</span>Q&A管理</button>
   <button class="nav-btn" onclick="showPage('report')"><span class="nav-icon">📊</span>レポート</button>
-  <div class="sidebar-bottom">データはブラウザに保存</div>
+  <div id="admin-menu" style="display:none">
+    <div class="nav-label" style="margin-top:16px">管理者</div>
+    <button class="nav-btn" onclick="showPage('clients')"><span class="nav-icon">👥</span>クライアント管理</button>
+  </div>
+  <div class="sidebar-bottom">
+    <span id="login-user-label"></span><br>
+    <button onclick="doLogout()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:11px;cursor:pointer;padding:0;margin-top:4px">ログアウト</button>
+  </div>
 </div>
 <div class="main">
 
 <div class="page active" id="page-setup">
   <div class="page-title">初期設定</div>
-  <div class="page-sub">まずここを埋めてください。保存するとチャットが動き始めます。</div>
+  <div class="page-sub">まずここを埋めてください。</div>
   <div class="card">
     <div class="card-title">基本情報</div>
     <div class="row2">
       <div class="field"><label>会社名</label><input id="s-name" placeholder="例：山田Web制作" oninput="updateLabel()"></div>
-      <div class="field"><label>GASのURL</label><input id="s-key" placeholder="https://script.google.com/macros/s/xxx/exec"></div>
-<div class="field"><label>お問い合わせURL</label><input id="s-contact-url" placeholder="https://yoursite.com/contact"></div>
-<div class="field"><label>電話番号（任意・空欄なら非表示）</label><input id="s-tel" placeholder="例：03-1234-5678"></div>
+      <div class="field"><label>お問い合わせURL</label><input id="s-contact-url" placeholder="https://yoursite.com/contact"></div>
     </div>
+    <div class="field"><label>電話番号（任意）</label><input id="s-tel" placeholder="例：03-1234-5678"></div>
   </div>
   <div class="card">
-    <div class="card-title">サイトの内容（AIの知識ベースになります）</div>
+    <div class="card-title">サイトの内容（AIの知識ベース）</div>
     <div class="field">
       <label>URLで自動取得</label>
       <div style="display:flex;gap:8px">
@@ -137,18 +156,17 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
     </div>
     <div style="text-align:center;font-size:11px;color:#aaa;margin:2px 0 8px">── または ──</div>
     <div class="field">
-      <label>テキストを直接貼り付け（おすすめ）</label>
-      <textarea id="s-content" style="min-height:120px" placeholder="サービス内容、料金、よくある質問、営業時間など何でもOKです。"></textarea>
+      <label>テキストを直接貼り付け</label>
+      <textarea id="s-content" style="min-height:120px" placeholder="サービス内容、料金、よくある質問など"></textarea>
     </div>
-    <div class="info-box">💡 多く書くほどAIの回答精度が上がります</div>
   </div>
-  <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;padding:13px;font-size:14px;border-radius:10px">設定を保存して開始する →</button>
+  <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;padding:13px;font-size:14px;border-radius:10px">設定を保存する →</button>
   <div id="save-status"></div>
 </div>
 
 <div class="page" id="page-chat">
   <div class="page-title">チャット確認</div>
-  <div class="page-sub">実際の動作をここで確認できます。</div>
+  <div class="page-sub">実際の動作を確認できます。</div>
   <div class="chat-wrap">
     <div class="chat-header">
       <div class="chat-avatar">💬</div>
@@ -170,8 +188,8 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
   <div class="page-sub">登録した回答がAIより優先されます。</div>
   <div class="card">
     <div class="card-title">Q&Aを追加</div>
-    <div class="field"><label>質問</label><input id="qa-q" placeholder="例：料金の支払いはどうすればいいですか？"></div>
-    <div class="field"><label>回答</label><textarea id="qa-a" placeholder="例：銀行振込・クレジットカードに対応しています。"></textarea></div>
+    <div class="field"><label>質問</label><input id="qa-q" placeholder="例：料金はいくらですか？"></div>
+    <div class="field"><label>回答</label><textarea id="qa-a" placeholder="例：ホームページ制作は50万円〜です。"></textarea></div>
     <div class="row2">
       <div class="field"><label>カテゴリ</label>
       <select id="qa-cat">
@@ -179,7 +197,7 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
       </select></div>
       <div class="field"><label>優先度</label>
       <select id="qa-priority">
-        <option value="高">高（必ずこの回答を使う）</option><option value="中">中（参考にする）</option>
+        <option value="高">高（必ずこの回答）</option><option value="中">中（参考にする）</option>
       </select></div>
     </div>
     <button class="btn btn-green" onclick="addQA()">+ Q&Aを追加する</button>
@@ -211,60 +229,131 @@ body{font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif;background
   </div>
 </div>
 
+<div class="page" id="page-clients">
+  <div class="page-title">クライアント管理</div>
+  <div class="page-sub">新規クライアントの追加・管理ができます。</div>
+  <div class="card">
+    <div class="card-title">新規クライアントを追加</div>
+    <div class="row2">
+      <div class="field"><label>クライアントID（ログインID）</label><input id="c-id" placeholder="例：client001"></div>
+      <div class="field"><label>パスワード</label><input id="c-pass" placeholder="例：pass1234"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>会社名</label><input id="c-name" placeholder="例：山田Web制作"></div>
+      <div class="field"><label>サイトURL</label><input id="c-site" placeholder="https://yamada.com"></div>
+    </div>
+    <button class="btn btn-green" onclick="addClient()">+ クライアントを追加する</button>
+    <div id="client-status" style="margin-top:8px"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">登録済みクライアント <span id="client-count" style="font-weight:400;color:#888;font-size:12px"></span></div>
+    <div id="client-list"></div>
+    <div id="client-empty" style="font-size:13px;color:#aaa;text-align:center;padding:20px">まだクライアントが登録されていません</div>
+  </div>
+</div>
+
 </div>
 </div>
 
 <script>
-let settings = { name:'', contactUrl:'', content:'' };
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxfaeNtHHLhP0e6yWRPnjeSt5nmxLBppPQ2FrvYT272dZUqZu9KBpKvVMbYZyiIODg/exec';
+
+let currentUser = null;
+let settings = { name:'', contactUrl:'', tel:'', content:'' };
 let qaList = [];
 let logs = [];
 let chatHistory = [];
 let chatMsgCount = 0;
 let chatBusy = false;
 
-window.onload = function() {
+async function doLogin() {
+  const id = document.getElementById('login-id').value.trim();
+  const pass = document.getElementById('login-pass').value.trim();
+  if (!id || !pass) return;
+  const statusEl = document.getElementById('login-status');
+  const errEl = document.getElementById('login-err');
+  statusEl.innerHTML = '<div class="status s-load">ログイン中...</div>';
+  errEl.style.display = 'none';
   try {
-    const s = JSON.parse(localStorage.getItem('cbot_settings') || '{}');
-    settings = { ...settings, ...s };
-    qaList = JSON.parse(localStorage.getItem('cbot_qa') || '[]');
-    logs = JSON.parse(localStorage.getItem('cbot_logs') || '[]');
-    if (settings.name) {
-      document.getElementById('s-name').value = settings.name;
-      document.getElementById('s-key').value = settings.gasUrl || '';
-document.getElementById('s-contact-url').value = settings.contactUrl || '';
-document.getElementById('s-tel').value = settings.tel || '';
-document.getElementById('s-content').value = settings.content || '';
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'login', gasUrl: GAS_URL, id, pass })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      currentUser = data;
+      currentUser.clientId = data.role === 'admin' ? 'sonido' : data.clientId;
+      statusEl.innerHTML = '';
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-screen').style.display = 'grid';
+      if (data.role === 'admin') document.getElementById('admin-menu').style.display = 'block';
+      document.getElementById('login-user-label').textContent = data.name;
+      await loadSettings();
+      loadLogs();
+      renderQAList();
+      renderReport();
+      initChat();
+    } else {
+      errEl.textContent = data.error || 'ログインに失敗しました';
+      errEl.style.display = 'block';
+      statusEl.innerHTML = '';
+    }
+  } catch(e) {
+    errEl.textContent = 'エラーが発生しました。';
+    errEl.style.display = 'block';
+    statusEl.innerHTML = '';
+  }
+}
+
+function doLogout() {
+  currentUser = null;
+  settings = { name:'', contactUrl:'', tel:'', content:'' };
+  qaList = []; logs = []; chatHistory = [];
+  document.getElementById('main-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-id').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('chat-messages').innerHTML = '';
+  document.getElementById('admin-menu').style.display = 'none';
+}
+
+async function loadSettings() {
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'get_settings', gasUrl: GAS_URL, clientId: currentUser.clientId })
+    });
+    const data = await res.json();
+    if (data.settings) {
+      settings = { ...settings, ...data.settings };
+      qaList = data.settings.qaList || [];
+      document.getElementById('s-name').value = settings.name || '';
+      document.getElementById('s-contact-url').value = settings.contactUrl || '';
+      document.getElementById('s-tel').value = settings.tel || '';
+      document.getElementById('s-content').value = settings.content || '';
       updateLabel();
     }
   } catch(e) {}
-  renderQAList();
-  renderReport();
-  initChat();
-};
+}
 
 function saveToStorage() {
-  localStorage.setItem('cbot_settings', JSON.stringify(settings));
-  localStorage.setItem('cbot_qa', JSON.stringify(qaList));
-  localStorage.setItem('cbot_logs', JSON.stringify(logs));
-  // GASにも保存
- // Vercel経由でGASに保存
-  if (settings.gasUrl) {
-    fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'save_settings',
-        gasUrl: settings.gasUrl,
-        settings: {
-          name: settings.name,
-          content: settings.content,
-          contactUrl: settings.contactUrl,
-          tel: settings.tel,
-          qaList: qaList
-        }
-      })
-    }).catch(e => console.log('GAS保存エラー:', e));
-  }
+  fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'save_settings',
+      gasUrl: GAS_URL,
+      clientId: currentUser.clientId,
+      settings: { name: settings.name, content: settings.content, contactUrl: settings.contactUrl, tel: settings.tel, qaList }
+    })
+  }).catch(e => console.log('保存エラー:', e));
+  localStorage.setItem('cbot_logs_' + currentUser.clientId, JSON.stringify(logs.slice(0,100)));
+}
+
+function loadLogs() {
+  try { logs = JSON.parse(localStorage.getItem('cbot_logs_' + currentUser.clientId) || '[]'); } catch(e) {}
 }
 
 function showPage(id) {
@@ -273,7 +362,8 @@ function showPage(id) {
   document.getElementById('page-' + id).classList.add('active');
   event.currentTarget.classList.add('active');
   if (id === 'chat') initChat();
-  if (id === 'report') renderReport();
+  if (id === 'report') { loadLogs(); renderReport(); }
+  if (id === 'clients') loadClients();
 }
 
 function updateLabel() {
@@ -285,7 +375,7 @@ async function fetchSiteContent() {
   if (!url) return;
   const statusEl = document.getElementById('fetch-status');
   const btn = document.getElementById('fetch-btn');
-  statusEl.innerHTML = '<div class="status s-load">読み込み中...（少し時間がかかります）</div>';
+  statusEl.innerHTML = '<div class="status s-load">読み込み中...</div>';
   btn.disabled = true;
   try {
     const res = await fetch('/api/chat', {
@@ -296,23 +386,22 @@ async function fetchSiteContent() {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     document.getElementById('s-content').value = data.content;
-    statusEl.innerHTML = `<div class="status s-ok">✅ 取得完了（${data.content.length}文字）確認して保存してください。</div>`;
+    statusEl.innerHTML = `<div class="status s-ok">取得完了（${data.content.length}文字）</div>`;
   } catch(e) {
-    statusEl.innerHTML = '<div class="status s-err">❌ 取得できませんでした。直接貼り付けてください。</div>';
+    statusEl.innerHTML = '<div class="status s-err">取得できませんでした。直接貼り付けてください。</div>';
   }
   btn.disabled = false;
 }
 
 function saveSettings() {
   settings.name = document.getElementById('s-name').value.trim();
-  settings.gasUrl = document.getElementById('s-key').value.trim();
-settings.contactUrl = document.getElementById('s-contact-url').value.trim();
-settings.tel = document.getElementById('s-tel').value.trim();
-settings.content = document.getElementById('s-content').value.trim();
+  settings.contactUrl = document.getElementById('s-contact-url').value.trim();
+  settings.tel = document.getElementById('s-tel').value.trim();
+  settings.content = document.getElementById('s-content').value.trim();
   if (!settings.name) { showStatus('save-status','会社名を入力してください','err'); return; }
   if (!settings.content) { showStatus('save-status','サイトの内容を入力してください','err'); return; }
   saveToStorage();
-  showStatus('save-status','✓ 保存しました！「チャット確認」から動作をチェックしてください','ok');
+  showStatus('save-status','✓ 保存しました！','ok');
 }
 
 function showStatus(id, msg, type) {
@@ -326,10 +415,9 @@ function initChat() {
   document.getElementById('chat-bot-name').textContent = name + ' のBot';
   const box = document.getElementById('chat-messages');
   if (box.children.length === 0) {
-    chatHistory = [];
-    chatMsgCount = 0;
+    chatHistory = []; chatMsgCount = 0;
     addBotMsg(`こんにちは！${name}のAIアシスタントです。\nご質問はお気軽にどうぞ 😊`,
-      ['サービス内容を教えて','料金はいくら？','まず相談したい']);
+      ['サービス内容を教えて','料金はいくら？','無料相談したい']);
   }
 }
 
@@ -340,33 +428,26 @@ async function chatSend(text) {
   chatMsgCount++;
   addUserMsg(msg);
   setChatLoading(true);
-
   const matched = findQA(msg);
-  let reply = '', type = 'ai';
-
   const systemPrompt = matched
-    ? `ユーザーが「${matched.q}」について聞いています。必ず次の内容で答えてください：「${matched.a}」`
-    : `あなたは「${settings.name}」のAIアシスタントです。\n=== サイト情報 ===\n${settings.content}\n=== ここまで ===\nルール：2〜3文で簡潔に答える。マークダウン記法（**や#など）は絶対に使わない。普通の文章で書く。長くなりすぎない。会話を続けやすいよう最後に短い質問を1つ添える。サイト情報にないことは「詳しくはお問い合わせください」と答える。`;
-
+    ? `ユーザーが「${matched.q}」について聞いています。必ず次の内容で答えてください：「${matched.a}」マークダウン記法は使わない。`
+    : `あなたは「${settings.name}」のAIアシスタントです。\n=== サイト情報 ===\n${settings.content}\n=== ここまで ===\nルール：2〜3文で簡潔に答える。マークダウン記法は使わない。最後に短い質問を1つ添える。サイト情報にないことは「詳しくはお問い合わせください」と答える。`;
+  let reply = '';
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: msg, history: chatHistory, systemPrompt })
+      body: JSON.stringify({ action: 'chat', message: msg, history: chatHistory, systemPrompt })
     });
     const data = await res.json();
-    if (data.error) throw new Error(data.error);
     reply = data.reply || 'もう一度お試しください。';
-    type = matched ? 'custom' : 'ai';
     chatHistory = [...chatHistory, { role:'user', content:msg }, { role:'assistant', content:reply }];
   } catch(e) {
-    reply = 'エラーが発生しました。しばらくしてからお試しください。';
+    reply = 'エラーが発生しました。';
   }
-
   setChatLoading(false);
   addBotMsg(reply, null, chatMsgCount % 5 === 0);
-  logs.unshift({ time: new Date().toLocaleString('ja-JP'), q: msg, type });
-  if (logs.length > 100) logs = logs.slice(0, 100);
+  logs.unshift({ time: new Date().toLocaleString('ja-JP'), q: msg, type: matched ? 'custom' : 'ai' });
   saveToStorage();
 }
 
@@ -380,7 +461,7 @@ function findQA(msg) {
 function addBotMsg(text, quick, cta) {
   const box = document.getElementById('chat-messages');
   const d = document.createElement('div'); d.className = 'msg bot';
-  d.innerHTML = `<div class="mlabel">Bot</div><div class="bubble bot">${esc(text)}</div>`;
+  d.innerHTML = `<div class="bubble bot">${esc(text)}</div>`;
   if (quick) {
     const qr = document.createElement('div'); qr.className = 'qrs';
     quick.forEach(q => { const b = document.createElement('button'); b.className = 'qr'; b.textContent = q; b.onclick = ()=>chatSend(q); qr.appendChild(b); });
@@ -388,7 +469,8 @@ function addBotMsg(text, quick, cta) {
   }
   if (cta && settings.contactUrl) {
     const c = document.createElement('div'); c.className = 'cta-card';
-    c.innerHTML = `<div class="cta-t">📩 無料相談受付中</div><div class="cta-b">相談だけでも大歓迎！${settings.tel ? `<br>📞 ${settings.tel}` : ''}</div><a href="${settings.contactUrl}" class="cta-btn" style="text-decoration:none;display:inline-block">無料相談を申し込む →</a>`;
+    const tel = settings.tel ? `<br>📞 ${settings.tel}` : '';
+    c.innerHTML = `<div class="cta-t">📩 無料相談受付中</div><div class="cta-b">相談だけでも大歓迎！${tel}</div><a href="${settings.contactUrl}" class="cta-btn" style="text-decoration:none;display:inline-block">無料相談を申し込む →</a>`;
     d.appendChild(c);
   }
   box.appendChild(d); box.scrollTop = box.scrollHeight;
@@ -439,7 +521,6 @@ function renderQAList() {
       <div class="qa-a">A. ${esc(qa.a)}</div>
       <div class="qa-footer">
         <span class="qa-cat">${qa.cat}</span>
-        <span class="qa-priority">優先度：${qa.priority}</span>
         <div class="qa-actions"><button class="btn btn-red btn-sm" onclick="deleteQA(${qa.id})">削除</button></div>
       </div>
     </div>`).join('');
@@ -456,7 +537,7 @@ function renderReport() {
   const empty = document.getElementById('log-empty');
   if (logs.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  tbody.innerHTML = logs.slice(0, 30).map(l => {
+  tbody.innerHTML = logs.slice(0,30).map(l => {
     const tagClass = l.type === 'custom' ? 'tag-custom' : 'tag-ai';
     const tagLabel = l.type === 'custom' ? 'カスタムQ&A' : 'AI自動';
     return `<tr><td style="white-space:nowrap;color:#aaa">${l.time}</td><td>${esc(l.q.slice(0,40))}${l.q.length>40?'…':''}</td><td><span class="tag ${tagClass}">${tagLabel}</span></td></tr>`;
@@ -466,6 +547,57 @@ function renderReport() {
 function clearLogs() {
   if (!confirm('ログを全て削除しますか？')) return;
   logs = []; saveToStorage(); renderReport();
+}
+
+async function addClient() {
+  const clientId = document.getElementById('c-id').value.trim();
+  const pass = document.getElementById('c-pass').value.trim();
+  const name = document.getElementById('c-name').value.trim();
+  const site = document.getElementById('c-site').value.trim();
+  if (!clientId || !pass || !name) { alert('ID・パスワード・会社名は必須です'); return; }
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'add_client', gasUrl: GAS_URL, clientId, pass, name, site })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showStatus('client-status', `✓ ${name}を追加しました！`, 'ok');
+      document.getElementById('c-id').value = '';
+      document.getElementById('c-pass').value = '';
+      document.getElementById('c-name').value = '';
+      document.getElementById('c-site').value = '';
+      loadClients();
+    }
+  } catch(e) {
+    showStatus('client-status', 'エラーが発生しました', 'err');
+  }
+}
+
+async function loadClients() {
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'get_clients', gasUrl: GAS_URL })
+    });
+    const data = await res.json();
+    const clients = data.clients || [];
+    document.getElementById('client-count').textContent = `（${clients.length}件）`;
+    const list = document.getElementById('client-list');
+    const empty = document.getElementById('client-empty');
+    if (clients.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    list.innerHTML = clients.map(c => `
+      <div class="client-item">
+        <span class="client-id">${esc(c.id)}</span>
+        <div>
+          <div class="client-name">${esc(c.name)}</div>
+          <div class="client-site">${esc(c.site||'')}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) {}
 }
 
 function esc(s) {
