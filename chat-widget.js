@@ -83,9 +83,10 @@ async function loadSettings() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'get_settings',
-          gasUrl: GAS_URL
-        })
+  action: 'get_settings',
+  gasUrl: GAS_URL,
+  clientId: CLIENT_ID
+})
       });
       const data = await res.json();
       if (data.settings) {
