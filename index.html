@@ -431,7 +431,7 @@ async function chatSend(text) {
   const matched = findQA(msg);
   const systemPrompt = matched
     ? `ユーザーが「${matched.q}」について聞いています。必ず次の内容で答えてください：「${matched.a}」マークダウン記法は使わない。`
-    : `あなたは「${settings.name}」のAIアシスタントです。\n=== サイト情報 ===\n${settings.content}\n=== ここまで ===\nルール：2〜3文で簡潔に答える。マークダウン記法は使わない。最後に短い質問を1つ添える。サイト情報にないことは「詳しくはお問い合わせください」と答える。`;
+    : `あなたは「${settings.name}」のAIアシスタントです。\n=== サイト情報 ===\n${settings.content}\n=== ここまで ===\nルール：必ず100文字以内で答える。文章を途中で切らない。マークダウン記法は使わない。最後に短い質問を1つ添える。サイト情報にないことは「詳しくはお問い合わせください」と答える。`;
   let reply = '';
   try {
     const res = await fetch('/api/chat', {
