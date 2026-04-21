@@ -221,7 +221,19 @@ btn.onclick = () => {
       messages.scrollTop = messages.scrollHeight;
     } else if (typingEl) { typingEl.remove(); typingEl = null; }
   }
-
+function fixCtaBtn() {
+  document.querySelectorAll('.sc-cta-btn').forEach(btn => {
+    btn.style.setProperty('color', '#fff', 'important');
+    btn.style.setProperty('text-decoration', 'none', 'important');
+    btn.addEventListener('mouseover', () => {
+      btn.style.setProperty('color', '#fff', 'important');
+      btn.style.setProperty('background', '#e85a2a', 'important');
+    });
+    btn.addEventListener('mouseout', () => {
+      btn.style.setProperty('background', '#FF6B35', 'important');
+    });
+  });
+}
   function esc(s) {
     return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
   }
