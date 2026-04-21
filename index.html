@@ -352,8 +352,18 @@ function saveToStorage() {
   localStorage.setItem('cbot_logs_' + currentUser.clientId, JSON.stringify(logs.slice(0,100)));
 }
 
-function loadLogs() {
-  try { logs = JSON.parse(localStorage.getItem('cbot_logs_' + currentUser.clientId) || '[]'); } catch(e) {}
+async function loadLogs() {
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'get_logs', gasUrl: GAS_URL, clientId: currentUser.clientId })
+    });
+    const data = await res.json();
+    logs = data.logs || [];
+  } catch(e) {
+    try { logs = JSON.parse(localStorage.getItem('cbot_logs_' + currentUser.clientId) || '[]'); } catch(e) {}
+  }
 }
 
 function showPage(id) {
