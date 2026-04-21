@@ -437,7 +437,7 @@ async function chatSend(text) {
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'chat', message: msg, history: chatHistory, systemPrompt })
+      body: JSON.stringify({ action: 'chat', message: msg, history: chatHistory, systemPrompt, gasUrl: GAS_URL, clientId: currentUser.clientId })
     });
     const data = await res.json();
     reply = data.reply || 'もう一度お試しください。';
