@@ -79,7 +79,21 @@ export default async function handler(req, res) {
       });
       const data = await response.json();
       const reply = data.content?.[0]?.text || 'エラーが発生しました。';
-      return res.status(200).json({ reply });
+      // GASにログを保存
+if (body.gasUrl && body.clientId) {
+  fetch(body.gasUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'save_log',
+      clientId: body.clientId,
+      message: body.message,
+      reply
+    })
+  }).catch(e => console.log('ログ保存エラー:', e));
+}
+
+return res.status(200).json({ reply });
     } catch(e) {
       return res.status(500).json({ error: e.message });
     }
