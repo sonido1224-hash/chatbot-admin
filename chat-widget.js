@@ -39,7 +39,7 @@ const RIGHT = document.currentScript.getAttribute('data-right') || '24px';
     .sc-cta{background:#eff4ff;border:1px solid #c5d5fb;border-radius:10px;padding:10px 12px;margin-top:4px;max-width:88%}
     .sc-cta-t{font-size:11px;font-weight:700;color:#3b5bdb;margin-bottom:4px}
     .sc-cta-b{font-size:11px;color:#555;line-height:1.6;margin-bottom:8px}
-    .sc-cta-btn{padding:5px 12px;background:#3b5bdb;color:#fff;border:none;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+    .sc-cta-btn{padding:5px 12px;background:#FF6B35;color:#fff;border:none;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
     .sc-typing{background:#fff;border-radius:12px;padding:9px 13px;display:inline-flex;gap:4px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
     .sc-typing span{width:5px;height:5px;border-radius:50%;background:#ccc;animation:scbob 1.2s infinite}
     .sc-typing span:nth-child(2){animation-delay:.2s}
