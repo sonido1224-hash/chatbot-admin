@@ -49,6 +49,7 @@ const RIGHT = document.currentScript.getAttribute('data-right') || '24px';
     .sc-footer{padding:8px 10px;border-top:1px solid #eee;background:#f7f8fc;display:flex;gap:6px;justify-content:center}
 .sc-footer-btn{padding:6px 14px;font-size:11px;font-weight:600;border-radius:20px;border:none;cursor:pointer;text-decoration:none;display:inline-block}
 .sc-footer-contact{background:#FF6B35;color:#fff}
+.sc-footer-contact:hover{background:#e85a2a;color:#fff !important;text-decoration:none}
 .sc-footer-tel{background:#fff;color:#1a1a2e;border:1px solid #ddd}
     .sc-input-row{padding:8px 10px;border-top:1px solid #eee;display:flex;gap:6px;background:#fff}
     .sc-input{flex:1;padding:7px 12px;font-size:13px;border:1px solid #e0e0e0;border-radius:20px;outline:none;font-family:inherit}
