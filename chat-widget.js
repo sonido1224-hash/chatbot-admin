@@ -102,6 +102,7 @@ async function loadSettings() {
       if (data.settings) {
   siteSettings = data.settings;
   document.getElementById('sc-name').textContent = siteSettings.name + ' のBot';
+        setTimeout(fixCtaBtn, 500);
   // フッターボタンを表示
   const footer = document.getElementById('sc-footer');
   let footerHtml = '';
