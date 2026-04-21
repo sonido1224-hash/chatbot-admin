@@ -53,8 +53,13 @@ export default async function handler(req, res) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-      const data = await gasRes.json();
-      return res.status(200).json(data);
+      const text = await gasRes.text();
+try {
+  const data = JSON.parse(text);
+  return res.status(200).json(data);
+} catch(e) {
+  return res.status(500).json({ error: 'GASのレスポンス解析エラー', raw: text.slice(0, 200) });
+}
     } catch(e) {
       return res.status(500).json({ error: e.message });
     }
