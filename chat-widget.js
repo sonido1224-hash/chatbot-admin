@@ -224,15 +224,17 @@ fixCtaBtn();
     } else if (typingEl) { typingEl.remove(); typingEl = null; }
   }
 function fixCtaBtn() {
-  document.querySelectorAll('.sc-cta-btn').forEach(btn => {
+  document.querySelectorAll('.sc-cta-btn, .sc-footer-contact').forEach(btn => {
     btn.style.setProperty('color', '#fff', 'important');
     btn.style.setProperty('text-decoration', 'none', 'important');
     btn.addEventListener('mouseover', () => {
       btn.style.setProperty('color', '#fff', 'important');
       btn.style.setProperty('background', '#e85a2a', 'important');
+      btn.style.setProperty('text-decoration', 'none', 'important');
     });
     btn.addEventListener('mouseout', () => {
       btn.style.setProperty('background', '#FF6B35', 'important');
+      btn.style.setProperty('color', '#fff', 'important');
     });
   });
 }
