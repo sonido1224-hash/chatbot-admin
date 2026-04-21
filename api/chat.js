@@ -46,7 +46,7 @@ export default async function handler(req, res) {
   }
 
   // GASへの中継（ログイン・設定・クライアント管理）
-  if (['login','get_settings','save_settings','get_clients','add_client'].includes(body.action)) {
+  if (['login','get_settings','save_settings','get_clients','add_client','save_log','get_logs'].includes(body.action)) {
     try {
       const gasRes = await fetch(body.gasUrl, {
         method: 'POST',
