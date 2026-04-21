@@ -197,6 +197,7 @@ btn.onclick = () => {
       const contactUrl = siteSettings.contactUrl || '';
       c.innerHTML = `<div class="sc-cta-t">📩 無料相談受付中</div><div class="sc-cta-b">相談だけでも大歓迎！${tel}</div>${contactUrl ? `<a href="${contactUrl}" class="sc-cta-btn">無料相談を申し込む →</a>` : ''}`;
       d.appendChild(c);
+fixCtaBtn();
     }
     messages.appendChild(d);
     messages.scrollTop = messages.scrollHeight;
